@@ -1,0 +1,62 @@
+테이블 목록
+ 1. departement
+ 2. proffesor
+ 3. student
+ 4. course
+ 5. teaches
+ 6. takes
+ 7. room
+
+
+department
+ 1. deptName
+ 2. chairman
+ 3. building
+ 4. budget
+
+
+professor
+ 1. pID
+ 2. name
+ 3. deptName
+ 4. salary
+
+
+student
+ 1. sID
+ 2. name
+ 3. gender
+ 4. deptName
+ 5. GPA
+ 6. totalCredit
+
+
+course
+ 1. cID
+ 2. title
+ 3. deptName
+ 4. credit
+
+
+teaches
+ 1. pID
+ 2. cID
+ 3. semester
+ 4. year
+ 5. classroom
+
+
+takes
+ 1. sID
+ 2. cID
+ 3. semester
+ 4. year
+ 5. grade
+
+
+room
+ 1. roomID
+ 2. building
+ 3. capacity
+
+

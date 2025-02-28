@@ -1,0 +1,623 @@
+목차
+ 3.1 데이터베이스 언어
+ 3.2 DDL SQL
+ 3.3 DML SQL
+ 3.4 Select SQL 문장
+ 3.5 널 값
+
+
+SQL 언어는 상용 데이터베이스 시스템에서 가장 많이 사용되는 언어이다
+
+
+ * 데이터베이스 언어
+사용자는 데이터베이스 언어를 통하여
+요구사항을 데이터베이스 시스템에 표현
+
+데이터베이스 언어 분류 방식
+ 1. 기능적 관점
+  (1) DDL
+  (2) DML
+  (3) DCL
+ 2. 표현방식 관점
+ (1) 절차적인 언어
+ (2) 비절차적인 언어
+
+D DMC L로 외우자
+
+
+ * DDL (data definition language)
+스키마에 대한 조작을 담당
+스키마 생성, 삭제, 변경 등
+스키마와 관련된 도메인, 데이터 제약 조건 등을 표현
+
+
+ * DML (data manipulation language)
+인스턴스를 조작하는 언어
+
+질의어라고도 한다 (query langauge)
+사용자가 DML을 이용하여 질의를 사용해 
+데이터베이스 시스템에 전달/처리하기 때문
+
+
+ * DCL (data control language)
+스키마와 인스턴스를 제외한 다른 객체를 조작하는 언어
+데이터베이스 시스템을 운영하기 위한 여러 가지 기능
+
+트랜잭션 시작/종료
+트랜잭션 분리도 지정
+세션 시작/종료
+회복 및 목구 기능
+데이터 권한 부여 및 취소
+사용자 계좌 관리 등
+
+
+ * 절차적 언어, 비절차적 언어
+
+ 절차적 언어
+처리 방법 및 절차를 명시
+how to do
+
+ 비절차적 언어
+원하는 데이터만을 명시
+what to do
+방법 및 절차에 대한 언급 x
+
+비절차적 언어가 더 진보된 언어
+
+
+ * 관계형 데이터베이스 언어
+SQL, QUEL, Query by Example, LDL 등이 있다
+
+
+ * SQL
+Structured query language
+기능적으로 DDL, DML, DCL을 모두 포함
+
+상용 시스템은 항상 표준 SQL을 지원하지 x
+SQP-92 지원을 원칙으로 하고
+동시에 특정 시스템 고유의 SQL 기능을 지원
+
+
+ * 실질적인 표준, 공식적인 표준
+
+ 실질적인 표준
+de facto
+산업체에서 실질적으로 인식되는 표준
+시장에 영향을 미치는 주요 회사가 제시
+
+ 공식적인 표준 
+de jure
+표준 공식 기관에서 제정한 표준
+ISO, ANSI 등
+
+
+ * FIPS
+미국 연방 정부에서 시행하는 공개 표준
+federal information processing standards
+
+
+ * ISO
+국제기구 UN의 산하 기관
+공인 표준화 단체 중 가장 인정받는 기관
+
+원칙적으로 각 국가는 한 표의 의결권을 가진다
+
+정보통신 분야의 다양한 표준안을 제정
+
+
+ * ANSI
+미국 표준화 공인 기관
+ISO의 표준 제정에 많은 영향력을 발휘
+
+
+ * W3C
+인터넷 관련 기술 표준을 제정
+
+
+ * SQL 특징
+대소문자 구분이 x
+인용 부호 내에서만 대소문자를 구분
+
+세미콜론(;)이 문장의 끝을 표기
+
+
+ * DDL SQL
+
+기능은
+ 1. 관계 스키마
+ 2. 속성의 도메인
+ 3. 무결성 제약 
+ 4. 관계에 연관되는 인덱스
+ 5. 관계 저장을 위한 디스크 상의 물리적 구조
+ 6. 관계에 연관되는 보안 및 권한 부여/취소
+
+
+ * SQL 도메인 타입
+데이터 타입을 정의
+도메인 타입은 데이터 타입을 의미
+
+종류는
+ 1. 문자열  char(n)
+ 2. 가변 길이 문자열  varchar(n)
+ 3. 정수  int
+ 4. 작은 정수  smallint
+ 5. 넘버  numeric(p, d)
+ 6. 실수 등  real precison, double precision, float(n)
+
+ numeric(p, d)
+numeric(사용 숫자 개수, 소수점 자릿수)
+ex) numeric(5, 2)는 xxx.xx를 의미
+
+
+ * 테이블 생성
+Create table 테이블명 (
+	속성명1 데이터 타입1,
+	속성명2 데이터 타입2 not null,
+	...
+	(무결성 제약 조건1),
+	(무결성 제약 조건2),
+	...);
+
+속성명과 도메인명이 쌍을 이루고
+마지막에 관련 데이터 무결성 제약이 나온다
+
+속성명 동메인명 not null도 가능
+
+ex)
+Create table person (
+	name varchar(20) not null,
+	age int,
+	height numeric(5, 2));
+
+
+ * Insert 문장
+Insert into 테이블명 vlues();
+
+테이블에 튜플을 추가하는 명령어
+괄호() 안에는 해당 테이블의 속성에 맞춰서 작성한다
+
+한 번에 한 튜플만 추가 가능
+
+ex) Insert into person('LJJ', 27, 181.00);
+
+
+ * 무결성 제약
+ 1. not null
+ 2. primary key
+ 3. foreign key
+
+ not null
+널 값 허용 x
+속성명 도메인명 not null
+
+ primary key
+테이블의 주 키를 선언
+ 1. primary key(속성명1, 속성명2)
+ 2. 속성명 도메인명 primary key
+
+ foreign key
+외래 키를 선언
+ 1. foreign key(속성명) references 테이블명;
+ 2. foreign key(속성명) refenrences 테이블명(속성명);
+
+무결성 제약의 이름을 명기할 수 있다
+constraint 제약명 foreign key (속성명) references 테이블명
+
+무결성 제약에 이름을 부여하면
+나중에 해당 제약 삭제/변경 할 때 용이하다
+
+ex)
+Create table person(
+	name varchar(20) not null,
+	nationalNumber int,
+	studentNumber int,
+	height numeric(5, 2),
+	university varchar(20),
+	home varchar(20),
+
+	primary key(nationalNumber),
+	foreign key(university) references seoulUniversity,
+	constraint whereLive foreign key(home) references seoul);
+
+
+ * 제약 조건 check
+check (속성명 in (값1, 값2))
+해당 속성은 명시된 값에서만 가져야 한다
+
+ex) check (gender in ('F', 'M')
+
+
+ * 스키마 삭제 및 변경
+스키마 삭제는 DROP 문장을 사용
+스키마 변경은 ALTER 문장을 사용 (속성 추가 및 삭제)
+
+
+ * ALTER 문장
+ 1. 속성 추가/삭제
+ 2. 제약사항 추가/삭제
+
+ 속성 추가
+Alter table 테이블명 add 속성명1 도메인명1;
+이 때 새로운 속성은 널 값을 갖는다
+
+ 속성 삭제
+Alter table 테이블명 drop 속성명;
+
+
+ * DROP과 DELETE
+DROP 문장은 스키마를 삭제하는 DDL 기능
+DELETE 문장은 내용물(튜플)만 삭제하는 DML 기능
+
+ DROP 문장
+Drop table 테이블명;
+
+ DELETE 문장
+Delete from 테이블명;
+
+TRUNCATE도 DELETE와 마찬가지로 튜플을 삭제
+그러나 TRUNCATE은 DDL의 일부이다
+
+
+ * DDL 기본 문장 키워드
+ 1. CREATE
+ 2. ALTER
+ 3. DROP
+
+
+ * 카탈로그
+다수 스키마의 모임
+
+스키마는
+테이블, 타입, 제약하상, 뷰, 도메인 등의 모임
+
+오카클에서의 카탈로그는
+서버 DBMS가 관리하는 전체 데이터베이스를 의미
+
+
+ * DML SQL
+ 1. Select  검색
+ 2. Insert  입력
+ 3. Delete  삭제
+ 4. Update  갱신
+
+Select 문장이 가장 복잡하고 기능이 많다
+
+
+ * Insert  입력
+데이터베이스에 튜플을 입력
+
+ 1. Insert into 테이블명 values(튜플);
+ 2. Insert into 테이블명 (속성명1, 속성명2) values(값1, 값2);
+ 3. Insert into 테이블명1 select * from 테이블명2;
+
+이 때 튜플 중 null이라고 명시하면 널 값이 들어간다 
+
+insert 문장에 select, from, where을 사용 가능
+
+
+ * Delete  삭제
+튜플을 삭제
+
+ 1. Delete from 테이블명;  // 모든 튜플 삭제
+ 2. Delete form 테이블명 where 속성명=속성값;  // 특정 튜플만 삭제
+ 3. Delete from 테이블명 where 속성명 in ();  // 중첩질의 형식
+
+모든 튜플을 삭제해도 스키마는 남는다
+스키마를 삭제하는 문장은 drop 문장
+
+where 절에서 =, <, > 사용 가능
+
+삭제 연산으로 튜플의 특정 속성 값만을 삭제할 수는 없다
+-> update 문장으로 삭제해야 한다
+
+SQL에서는 튜플 삭제에 따라 평균값이 변하지 않는다
+
+ex)
+Delete from professor
+where salary < (select avg(salary) form professor);
+
+
+ * Update  갱신
+
+Update 테이블명 set 속성명 = 속성명에 연산 where 속성명에 범위;
+ex) Update professor
+	set salary = salary * 1.3
+	where salary > 7000;
+
+Update 테이블명
+	set 속성명 = 값
+	where 속성명 is null;
+
+Update 테이블명 별명
+	set 별명.속성명 ...; 도 가능
+ex)
+Update student S
+set S.totalCredit = (
+	select sum(credit)
+	from taks natural join course
+	where S.sID=takes.sID and grade <> 'F' and grade is not null);
+
+case 문장을 사용할 수 있다
+ex) Update professor
+	set salary = case
+		when salary <= 7000 then salary * 1.5
+		else salary * 1.03
+	end;
+
+
+ * case 문장
+case
+	when 조건 then 연산
+	else 연산
+end;
+
+
+ * 선택  Select
+주어진 조건에 적합한 데이터를 검색해서 반환
+6개의 절 (clause)을 가질 수 있다
+
+6개의 절
+ 1. select 속성명1, 속성명2
+ 2. from 테이블명1, 테이블명2
+ 3. where 
+ 4. group by
+ 5. having
+ 6. order by
+
+반드시 위의 순서를 지켜야 한다
+
+select 절과 from절은 반드시 필요
+생략 불가능하다
+
+having절은 group by 절이 나오지 않으면 나올 수 없다
+
+select 문장의 결과는 테이블
+관계 대수와 마찬가지이다
+
+
+ * select 절
+관계 대수의 투영 연산에 대응
+사용자가 보고 싶은 속성 리스트를 리턴
+
+Select 속성명1, 속성명2
+from 테이블명;
+
+select 절에서 * 기호는 모든 속성을 의미한다
+
+Select * from 테이블명1;
+
+입력 테이블과 결과 테이블에
+튜플의 중복을 허용
+
+튜플 중복을 허용하고 싶지 않으면
+속성 앞에 distinct 키워드 사용
+ex) Select distinct 속성명 from 테이블명;
+
+중복 값을 허용하는 결과 테이블을 만들고 싶다면
+속성 앞에 all 키워드를 사용
+SQL  언어의 기본 값은 all이다
+ex) Select all 속성명 from 테이블명;
+
+
+ * from 절
+질의에 관련이 있는 테이블을 나열
+관계 대수의 카테시안 곱에 대응
+
+Select 속성명1, 속성명2
+from 테이블명1, 테이블명2;
+
+명시된 테이블들의
+모든 튜플 조합이 결과로 생성
+
+
+ * where 절
+결과 튜플이 만족해야 하는 조건을 명시
+관계 대수의 선택 조건에 대응
+
+이 때 논리 연산자를 사용 가능 (and, or, not)
+우선 순위는 산술 연산자 > 논리 연산자
+
+Select 속성명1, 속성명2
+from 테이블명1
+where 조건1 논리 연산자 조건2;
+
+
+ * between 연산자
+값 구간을 의미
+구간은 경계 값도 포함한다
+where 절에서 사용
+
+Select 속성명
+from 테이블명
+where 속성명 between 값1 and 값2;
+
+
+ * where 절의 튜플 비교
+Select 속성명1, 속성명2
+from 테이블명1, 테이블명2
+where (테이블명1.속성명3, 속성명4) = (테이블명2.속성명3, 속성명5);
+
+같은 튜플 비교를 다르게 표현할 수 있다
+ 1. where (professor.pID, deptName) = (teacher.pID, 'CS')
+ 2. where professor.pID = teacher.pID and deptName = 'CS'
+이 둘은 같은 표현이다
+
+
+ * Select 문장의 실행 모델  // 매우 중요하다 !!!!
+ 1. from 절에 명시된 각 테이블에서 한 개씩 튜플을 추출한 후
+ 2. 이에 where 절에 명시되어 있는 조건을 적용
+ 3. 조건이 참이라고 판정이 나면
+그 튜플을 group by 절에 보낸다
+ 4. group by 절에 명시된 속성을 이용하여
+중간 결과를 서브 그룹으로 나눈다
+ 5. 각 서브 그룹에 대하여  having 조건을 적용하여
+참인 서브 그룹을 구한다
+ 6. 참인 서브 그룹에 대하여 order by 절을 적용하여 결과 테이블을 만든다
+
+select 문장은
+select-from-where 절로만 구성될 수 있다
+
+
+ * 조인
+조인은 where 절에 명시할 수 있다
+
+ 1. 동등 조인은 ==
+ 2. 세타 조인은 < >
+
+테이블명.속성명을 통해서 혼동을 방지할 수 있다
+
+
+ * 자연 조인
+결과 테이블에 조인 속성에 대한 중복을 제거하여 하나만 나온다
+
+Select 속성명1, 속성명2
+from 테이블명1 natural join 테이블명2 natural join 테이블명3;
+
+
+ * 재명명 연산
+as 키워드를 사용
+as 키워드는 생략할 수 있다
+
+속성 이름을 재명명할 수 있다
+테이블 이름을 재명명할 수 있다
+
+Select 기존속성명 as 변경속성명
+from 테이블명1;
+
+Select 속성명1, 속성명2, 속성명3 as 변경속성명, 속성명4
+from 테이블명1;
+
+Select distinct T.name
+	from professor as T, professor as S
+	where T.salary > S.salary and S.deptName = 'CS';
+
+
+ * 스트링 연산
+스트링 비교 연산
+
+ like 연산자
+패턴을 활용하여
+스트링에 대한 비교 연산을 제공
+
+% 기호는
+길이에 무관한 임의의 스트링을 의미
+
+언더바_는
+임의의 한 문자를 의미
+길이가 하나인 임의의 스트링을 의미
+
+ex)
+Select name
+from professor
+where name like '%da%';
+ㄴ 이름 중에 da가 포함된 이름 (~da~, nada, soda 같은)
+
+ex)
+Select cID
+from course
+where title like '100\' escape '\';
+ㄴ %를 문자로만 인식하게 이스케이프 문자를 사용
+ㄴ 100%를 가지는 스트링을 검색
+
+
+ * order by 절
+결과 테이블의 튜플을 정렬하는데 사용
+
+다른 결과 테이블이 생성되는 것이 아니라
+튜플 순서에 변화가 있는 것
+
+기본값은 오름차순
+내림차순을 원한다면 desc 키워드 사용
+
+한 개 이상의 속성 기준으로
+결과 튜플 정렬이 가능
+
+Select 속성명
+from 테이블명
+order by 속성명1, 속성명2;
+ㄴ 속성명1을 기준으로 오름차순 정렬 후 속성명2 기준으로 오름차순 정렬
+
+order by 속성명1 desc, 속성명2;
+ㄴ 속성명1을 기준으로 내림차순 정렬 후 속성명2 기준으로 오름차순 정렬
+
+
+SQL은 테이블에서 동일 튜플의 중복을 허용한다
+
+
+ * 집합 연산
+ 1. 합집합  union
+ 2. 교집합  intersect
+ 3. 차집합  except
+
+집합 연산의 결과 테이블은 튜플의 집합
+all 키워드가 없으면 항상 중복 튜플은 제거한 집합 형태로 나온다
+
+
+ 합집합
+테이블명1 union 테이블명2
+all 테이블명1 union all 테이블명2
+
+ 교집합
+테이블명1 intersect 테이블명2
+all 테이블명1 intersect all 테이블명2
+
+ 차집합
+테이블명1 except 테이블명2
+all 테이블명1 except all 테이블명2
+
+
+ * using
+조인 표현에서 사용
+using에 나온 속성만을 조인 속성으로 하여 자연 조인을 실행
+
+using(속성명)
+from 절에서 사용
+
+ex)
+Select distinct name
+from (course natural join takes) join student using(sID)
+where course.deptName = 'CS';
+
+
+ * 널 값
+튜플의 속성 값으로 널 값을 가질 수 있다
+값을 존재하지 않는다는 뜻
+
+값이 존재하나 아직 알려지지 않는 경우
+값이 원천적으로 존재하지 않는 경우
+값 존재 여부가 확인되지 않은 경우에 사용
+
+연산에서 예상치 못한 결과를 초래하지만
+널 값은 필요하다
+
+널 값이 포함된 산술 연산의 결과는 널 값
+
+널 값 존재 여부 표현
+ 1. is null
+ 2. is not null
+
+
+ * 세 값 논리
+비교 연산자의 결과는
+ 1. 참
+ 2. 거짓
+ 3. 모름
+
+널 값이 포함된 비교 연산자의 결과는 모름이다  unknown
+
+where 절은 결과가 참일 때만 반환한다
+거짓이거나 모름일 때는 반환하지 않는다
+
+참은 1
+거짓은 0
+모름은 0.5
+로 취급
+
+ 1. AND 두 입력의 최소값을 취함 
+ 2. OR   두 입력의 최대값을 취함
+ 3. NOT  주어진 값의 반대 값을 취함
+
+ex) 참 AND 거짓 = 1 AND 0 = 0 = 거짓
+참 OR 모름 = 1 OR 0.5 = 1 = 참
+Not 거짓 = 1 - 0 = 1 = 참
+Not 모름 = 1 - 0.5 = 0.5 = 모름

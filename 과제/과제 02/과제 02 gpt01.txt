@@ -1,0 +1,174 @@
+CREATE TABLE userss (
+    ids VARCHAR2(10) NOT NULL,
+    passwords INTEGER NOT NULL,
+    namess CHAR(10) NOT NULL,
+    gender CHAR(1),
+    favorite CHAR(10),
+    jobs CHAR(10),
+    email VARCHAR2(30),
+    
+    PRIMARY KEY (ids, favorite),
+    CHECK (gender IN ('M', 'F'))
+);
+
+CREATE TABLE goods (
+    productName VARCHAR2(20),
+    pID VARCHAR2(20),
+    manufacture CHAR(10),
+    stock INTEGER,
+    categorys CHAR(20),
+    series CHAR(5),
+    price INTEGER NOT NULL,
+    favorite CHAR(10),
+
+    PRIMARY KEY (pID, favorite, manufacture),
+    CHECK (series IN ('yes', 'no'))
+);
+
+CREATE TABLE company(
+    enterprises CHAR(10),
+    locations CHAR(10),
+    cID VARCHAR2(20),
+    mains CHAR(20),
+    employee INTEGER,
+    manufacture CHAR(10),
+    
+    PRIMARY KEY (manufacture)
+);
+
+INSERT INTO userss VALUES ('kk1237', 4321, 'jay', 'M', 'favorite', 'student', NULL);
+INSERT INTO userss VALUES ('4597', 6697, 'jun', 'M', 'smartphone', 'student', NULL);
+INSERT INTO userss VALUES ('blu332', 6679, 'lee', 'M', 'headphone', NULL, 'blu332@email.com');
+INSERT INTO userss VALUES ('red78', 4521, 'jiwoo', 'F', 'computer', 'teacher', 'red78@email.com');
+INSERT INTO userss VALUES ('case132', 6587, 'sin', 'F', 'smartphone', 'racer', 'case132@email.com');
+
+INSERT INTO goods VALUES ('notenote23', 'rr35187', 'red', 37, 'computer', 'yes', 1200000, 'computer');
+INSERT INTO goods VALUES ('pokepoke', 'rr58234', 'red', 26, 'smartphone', 'no', 700000, 'smartphone');
+INSERT INTO goods VALUES ('rain', 'bb56613', 'blue', NULL, 'computer', 'no', 2400000, 'smartphone');
+INSERT INTO goods VALUES ('grooow', 'gg35652', 'green', NULL, 'headphone', 'no', 350000, 'headphone');
+INSERT INTO goods VALUES ('sea36', 'bb13546', 'blue', 36, 'headphone', 'yes', 230000, 'computer');
+INSERT INTO goods VALUES ('nooow', 'gg52336', 'green', 23, 'smartphone', 'no', 1200000, 'smartphone');
+
+INSERT INTO company VALUES ('red', 'seoul', 'ssrr351964', 'computer', 36, 'red');
+INSERT INTO company VALUES ('blue', 'seoul', 'ssbb351522', 'smartphone', 12, 'green');
+INSERT INTO company VALUES ('green', 'busan', 'bbgg336974', 'headphone', 23, 'blue');
+INSERT INTO company VALUES ('black', 'busan', 'bbbb562396', 'chair', 46, 'red');
+INSERT INTO company VALUES ('white', 'jeonju', 'jjww315697', 'bottle', 113, 'green');
+
+ALTER TABLE userss ADD CONSTRAINT const01
+    FOREIGN KEY (favorite) REFERENCES goods (favorite);
+
+ALTER TABLE goods ADD CONSTRAINT const02
+    FOREIGN KEY (manufacture) REFERENCES company (manufacture);
+
+CREATE SEQUENCE sec06
+    START WITH 0
+    INCREMENT BY 10
+    MAXVALUE 100
+    MINVALUE 0
+    NOCYCLE
+    NOCACHE;
+
+CREATE VIEW v01 AS
+SELECT namess AS name, gender, favorite, jobs AS job
+FROM userss;
+
+CREATE VIEW v02 AS
+SELECT enterprises AS enterprice, locations AS location, mains AS main
+FROM company;
+
+CREATE VIEW v03 AS
+SELECT productName, manufacture, categorys AS category
+FROM goods
+WITH CHECK OPTION;
+
+CREATE OR REPLACE TRIGGER tri01
+AFTER INSERT ON userss
+REFERENCING NEW AS nrow
+FOR EACH ROW
+WHEN (nrow.gender = 'M' AND nrow.jobs = 'student')
+BEGIN
+  INSERT INTO log_table (user_id, action)
+  VALUES (:nrow.ids, 'New male student inserted');
+END;
+
+CREATE OR REPLACE TRIGGER tri02
+AFTER INSERT ON userss
+REFERENCING NEW AS nrow
+FOR EACH ROW
+WHEN (nrow.gender = 'F')
+BEGIN
+  INSERT INTO log_table (user_id, action)
+  VALUES (:nrow.ids, 'New female user inserted');
+END;
+
+SELECT * FROM v01;
+
+SELECT productName
+FROM goods
+WHERE price > SOME (
+  SELECT price
+  FROM goods
+  WHERE series = 'no'
+);
+
+SELECT productName
+FROM goods
+WHERE price < SOME (
+  SELECT price
+  FROM goods
+  WHERE stock > 25
+);
+
+SELECT ids
+FROM userss
+WHERE gender = ANY (
+  SELECT gender
+  FROM userss
+  WHERE jobs = 'student'
+);
+
+SELECT namess AS name
+FROM userss
+WHERE jobs = ANY (
+  SELECT jobs
+  FROM userss
+  WHERE email IS NULL
+);
+
+SELECT enterprises AS enterprice
+FROM company
+WHERE employee > ALL (
+  SELECT employee
+  FROM company
+  WHERE manufacture = 'red'
+);
+
+SELECT enterprises AS enterprice
+FROM company
+WHERE employee < ALL (
+  SELECT employee
+  FROM company
+  WHERE locations = 'seoul'
+);
+
+SELECT productName, stock
+FROM goods
+WHERE manufacture = (
+  SELECT manufacture
+  FROM company
+  WHERE locations = 'busan'
+);
+
+SELECT productName, pID, RANK() OVER (ORDER BY price DESC) AS sRank01
+FROM goods
+ORDER BY sRank01;
+
+SELECT enterprises AS enterprice, RANK() OVER (ORDER BY employee) AS sRank02
+FROM company
+ORDER BY sRank02;
+
+INSERT INTO userss VALUES ('poke341', 4456, 'keen', 'M', 'computer', 'student', NULL);
+INSERT INTO userss VALUES ('mon674', 6842, 'hou', 'F', 'headphone', 'teacher', 'popo12@email.com');
+INSERT INTO goods VALUES ('afleif', 'gg31664', 'green', 34, 'computer', 'no', 240000, 'computer');
+

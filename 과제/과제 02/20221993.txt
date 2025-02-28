@@ -1,0 +1,451 @@
+
+명령의 1 행에서 시작하는 중 오류 발생 -
+create table userss (
+    ids varchar2(10) not null,
+    passwords integer not null,
+    namess char(10) not null,
+    gender char(1),
+    favorite char(10),
+    jobs char(10),
+    email varchar2(30),
+    
+    primary key (ids, favorite),
+    check (gender in ('M', 'F'))
+)
+오류 보고 -
+ORA-00955: 기존의 객체가 이름을 사용하고 있습니다.
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+
+명령의 14 행에서 시작하는 중 오류 발생 -
+create table goods (
+    productName varchar2(20),
+    pID varchar2(20),
+    manufacture char(10),
+    stock integer,
+    categorys char(20),
+    series char(5),
+    price integer not null,
+    favorite char(10),
+
+    primary key (pID, favorite, manufacture),
+    check (series in ('yes', 'no'))
+)
+오류 보고 -
+ORA-00955: 기존의 객체가 이름을 사용하고 있습니다.
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+
+명령의 28 행에서 시작하는 중 오류 발생 -
+create table company(
+    enterprises char(10),
+    locations char(10),
+    cID varchar2(20),
+    mains char(20),
+    employee integer,
+    manufacture char(10),
+    
+    primary key (manufacture)
+)
+오류 보고 -
+ORA-00955: 기존의 객체가 이름을 사용하고 있습니다.
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+
+명령의 39 행에서 시작하는 중 오류 발생 -
+insert into userss values('kk1237', 4321, 'jay', 'M', 'favorite', 'student', null)
+오류 발생 명령행: 39 열: 13
+오류 보고 -
+SQL 오류: ORA-04098: 'C##ROOT.TRI01' 트리거가 부적합하며 재검증을 실패했습니다
+04098. 00000 -  "trigger '%s.%s' is invalid and failed re-validation"
+*Cause:    A trigger was attempted to be retrieved for execution and was
+           found to be invalid.  This also means that compilation/authorization
+           failed for the trigger.
+*Action:   Options are to resolve the compilation/authorization errors,
+           disable the trigger, or drop the trigger.
+
+명령의 41 행에서 시작하는 중 오류 발생 -
+insert into userss values('4597', 6697, 'jun', 'M', 'smartphone', 'student', null)
+오류 발생 명령행: 41 열: 13
+오류 보고 -
+SQL 오류: ORA-04098: 'C##ROOT.TRI01' 트리거가 부적합하며 재검증을 실패했습니다
+04098. 00000 -  "trigger '%s.%s' is invalid and failed re-validation"
+*Cause:    A trigger was attempted to be retrieved for execution and was
+           found to be invalid.  This also means that compilation/authorization
+           failed for the trigger.
+*Action:   Options are to resolve the compilation/authorization errors,
+           disable the trigger, or drop the trigger.
+
+명령의 43 행에서 시작하는 중 오류 발생 -
+insert into userss values('blu332', 6679, 'lee', 'M', 'headphone', null, 'blu332@email.com')
+오류 발생 명령행: 43 열: 13
+오류 보고 -
+SQL 오류: ORA-04098: 'C##ROOT.TRI01' 트리거가 부적합하며 재검증을 실패했습니다
+04098. 00000 -  "trigger '%s.%s' is invalid and failed re-validation"
+*Cause:    A trigger was attempted to be retrieved for execution and was
+           found to be invalid.  This also means that compilation/authorization
+           failed for the trigger.
+*Action:   Options are to resolve the compilation/authorization errors,
+           disable the trigger, or drop the trigger.
+
+명령의 45 행에서 시작하는 중 오류 발생 -
+insert into userss values('red78', 4521, 'jiwoo', 'F', 'computer', 'teacher', 'red78@email.com')
+오류 발생 명령행: 45 열: 13
+오류 보고 -
+SQL 오류: ORA-04098: 'C##ROOT.TRI01' 트리거가 부적합하며 재검증을 실패했습니다
+04098. 00000 -  "trigger '%s.%s' is invalid and failed re-validation"
+*Cause:    A trigger was attempted to be retrieved for execution and was
+           found to be invalid.  This also means that compilation/authorization
+           failed for the trigger.
+*Action:   Options are to resolve the compilation/authorization errors,
+           disable the trigger, or drop the trigger.
+
+명령의 47 행에서 시작하는 중 오류 발생 -
+insert into userss values('case132', 6587, 'sin', 'F', 'smartphone', 'racer', 'case132@email.com')
+오류 발생 명령행: 47 열: 13
+오류 보고 -
+SQL 오류: ORA-04098: 'C##ROOT.TRI01' 트리거가 부적합하며 재검증을 실패했습니다
+04098. 00000 -  "trigger '%s.%s' is invalid and failed re-validation"
+*Cause:    A trigger was attempted to be retrieved for execution and was
+           found to be invalid.  This also means that compilation/authorization
+           failed for the trigger.
+*Action:   Options are to resolve the compilation/authorization errors,
+           disable the trigger, or drop the trigger.
+
+명령의 49 행에서 시작하는 중 오류 발생 -
+insert into goods values('notenote23', 'rr35187', 'red', 37, 'computer', 'yes', 1200000, 'computer')
+오류 발생 명령행: 49 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 51 행에서 시작하는 중 오류 발생 -
+insert into goods values('pokepoke', 'rr58234', 'red', 26, 'smartphone', 'no', 700000, 'smartphone')
+오류 발생 명령행: 51 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 53 행에서 시작하는 중 오류 발생 -
+insert into goods values('rain', 'bb56613', 'blue', null, 'computer', 'no', 2400000, 'smartphone')
+오류 발생 명령행: 53 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 55 행에서 시작하는 중 오류 발생 -
+insert into goods values('grooow', 'gg35652', 'green', null, 'headphone', 'no', 350000, 'headphone')
+오류 발생 명령행: 55 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 57 행에서 시작하는 중 오류 발생 -
+insert into goods values('sea36', 'bb13546', 'blue', 36, 'headphone', 'yes', 230000, 'computer')
+오류 발생 명령행: 57 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 59 행에서 시작하는 중 오류 발생 -
+insert into goods values('nooow', 'gg52336', 'green', 23, 'smartphone', 'no', 1200000, 'smartphone')
+오류 발생 명령행: 59 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 61 행에서 시작하는 중 오류 발생 -
+insert into company values('red', 'seoul', 'ssrr351964', 'computer', 36, 'red')
+오류 발생 명령행: 61 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 63 행에서 시작하는 중 오류 발생 -
+insert into company values('blue', 'seoul', 'ssbb351522', 'smartphone', 12, 'green')
+오류 발생 명령행: 63 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 65 행에서 시작하는 중 오류 발생 -
+insert into company values('green', 'busan', 'bbgg336974', 'headphone', 23, 'blue')
+오류 발생 명령행: 65 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 67 행에서 시작하는 중 오류 발생 -
+insert into company values('black', 'busan', 'bbbb562396', 'chair', 46, 'red')
+오류 발생 명령행: 67 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 69 행에서 시작하는 중 오류 발생 -
+insert into company values('white', 'jeonju', 'jjww315697', 'bottle', 113, 'green')
+오류 발생 명령행: 69 열: 13
+오류 보고 -
+SQL 오류: ORA-00913: 값의 수가 너무 많습니다
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+명령의 71 행에서 시작하는 중 오류 발생 -
+alter table userss add constraint const01
+    foreign key (favorite) references goods
+오류 보고 -
+ORA-02267: 열의 데이터 유형이 참조 열의 데이터 유형과 일치하지 않습니다
+02267. 00000 -  "column type incompatible with referenced column type"
+*Cause:    The data type or collation of the referencing column was
+           incompatible with the data type or collation of the referenced
+           column.
+*Action:   Select a compatible data type for the referencing column.
+           Also, the collation of a character column in a foreign key must
+           match the collation of the corresponding column in the primary
+           key.
+
+명령의 74 행에서 시작하는 중 오류 발생 -
+alter table goods add constraint const02
+    foreign key (manufacture) references company
+오류 보고 -
+ORA-02268: 참조 테이블에 기본 키가 없습니다
+02268. 00000 -  "referenced table does not have a primary key"
+*Cause:    The referenced table does not have a primary key.
+*Action:   Specify explicitly the referenced table unique key.
+
+명령의 77 행에서 시작하는 중 오류 발생 -
+create sequence sec06
+    start with 0
+    increment by 10
+    maxvalue 100
+    minvalue 0
+    nocycle
+    nocache
+오류 보고 -
+ORA-00955: 기존의 객체가 이름을 사용하고 있습니다.
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+
+명령의 89 행에서 시작하는 중 오류 발생 -
+Create view v04 as
+select namess, gender, favorite, jobs
+from userss
+오류 보고 -
+ORA-00955: 기존의 객체가 이름을 사용하고 있습니다.
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+
+명령의 94 행에서 시작하는 중 오류 발생 -
+Create view v05 as
+select enterprises, locations, mains
+from company
+오류 보고 -
+ORA-00904: "MAINS": 부적합한 식별자
+00904. 00000 -  "%s: invalid identifier"
+*Cause:    
+*Action:
+
+명령의 100 행에서 시작하는 중 오류 발생 -
+Create view v08 as
+select productName, manufacture
+from goods
+with check option
+오류 보고 -
+ORA-00955: 기존의 객체가 이름을 사용하고 있습니다.
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+
+PRODUCTNAME         
+--------------------
+pokepoke
+rain
+grooow
+notenote23
+nooow
+
+
+PRODUCTNAME         
+--------------------
+notenote23
+nooow
+
+
+IDS       
+----------
+red78
+case132
+
+
+NAMESS    
+----------
+jay       
+jun       
+
+
+명령의 138 행에서 시작하는 중 오류 발생 -
+Select cID
+from company
+where employee >= all (
+  select employee
+  from company
+  where manufacture = 'red')
+오류 발생 명령행: 143 열: 9
+오류 보고 -
+SQL 오류: ORA-00904: "MANUFACTURE": 부적합한 식별자
+00904. 00000 -  "%s: invalid identifier"
+*Cause:    
+*Action:
+
+명령의 146 행에서 시작하는 중 오류 발생 -
+Select cID
+from company
+where employee != all (
+  select employee
+  from company
+  where locations = 'seoul')
+오류 발생 명령행: 151 열: 9
+오류 보고 -
+SQL 오류: ORA-00904: "LOCATIONS": 부적합한 식별자
+00904. 00000 -  "%s: invalid identifier"
+*Cause:    
+*Action:
+
+명령의 154 행에서 시작하는 중 오류 발생 -
+Select productName, stock
+from goods
+where manufacture = (
+  select manufacture
+  from company
+  where stock > 10)
+오류 발생 명령행: 157 열: 3
+오류 보고 -
+SQL 오류: ORA-01427: 단일 행 하위 질의에 2개 이상의 행이 리턴되었습니다.
+01427. 00000 -  "single-row subquery returns more than one row"
+*Cause:    
+*Action:
+
+PRODUCTNAME          PID                     SRANK01
+-------------------- -------------------- ----------
+rain                 bb56613                       1
+nooow                gg52336                       2
+notenote23           rr35187                       2
+pokepoke             rr58234                       4
+grooow               gg35652                       5
+sea36                bb13546                       6
+
+6개 행이 선택되었습니다. 
+
+
+CID                     SRANK02
+-------------------- ----------
+ssbb351522                    1
+ssbb351522                    1
+ssbb351522                    1
+ssbb351522                    1
+ssbb351522                    1
+ssbb351522                    1
+ssbb351522                    1
+ssbb351522                    1
+ssbb351522                    1
+bbgg336974                   10
+bbgg336974                   10
+
+CID                     SRANK02
+-------------------- ----------
+bbgg336974                   10
+bbgg336974                   10
+bbgg336974                   10
+bbgg336974                   10
+bbgg336974                   10
+bbgg336974                   10
+bbgg336974                   10
+ssrr351964                   19
+ssrr351964                   19
+ssrr351964                   19
+ssrr351964                   19
+
+CID                     SRANK02
+-------------------- ----------
+ssrr351964                   19
+ssrr351964                   19
+ssrr351964                   19
+ssrr351964                   19
+ssrr351964                   19
+bbbb562396                   28
+bbbb562396                   28
+bbbb562396                   28
+bbbb562396                   28
+bbbb562396                   28
+bbbb562396                   28
+
+CID                     SRANK02
+-------------------- ----------
+bbbb562396                   28
+bbbb562396                   28
+bbbb562396                   28
+jjww315697                   37
+jjww315697                   37
+jjww315697                   37
+jjww315697                   37
+jjww315697                   37
+jjww315697                   37
+jjww315697                   37
+jjww315697                   37
+
+CID                     SRANK02
+-------------------- ----------
+jjww315697                   37
+
+45개 행이 선택되었습니다. 
+
+
+명령의 172 행에서 시작하는 중 오류 발생 -
+Insert into userss values('poke341', 4456, 'keen', 'm', 'computer', 'student', null)
+오류 발생 명령행: 172 열: 13
+오류 보고 -
+SQL 오류: ORA-04098: 'C##ROOT.TRI01' 트리거가 부적합하며 재검증을 실패했습니다
+04098. 00000 -  "trigger '%s.%s' is invalid and failed re-validation"
+*Cause:    A trigger was attempted to be retrieved for execution and was
+           found to be invalid.  This also means that compilation/authorization
+           failed for the trigger.
+*Action:   Options are to resolve the compilation/authorization errors,
+           disable the trigger, or drop the trigger.
+
+명령의 175 행에서 시작하는 중 오류 발생 -
+Insert into userss values('mon674', 6842, 'hou', 'f', 'headphone', 'teacher', 'popo12@email.com')
+오류 발생 명령행: 175 열: 13
+오류 보고 -
+SQL 오류: ORA-04098: 'C##ROOT.TRI01' 트리거가 부적합하며 재검증을 실패했습니다
+04098. 00000 -  "trigger '%s.%s' is invalid and failed re-validation"
+*Cause:    A trigger was attempted to be retrieved for execution and was
+           found to be invalid.  This also means that compilation/authorization
+           failed for the trigger.
+*Action:   Options are to resolve the compilation/authorization errors,
+           disable the trigger, or drop the trigger.

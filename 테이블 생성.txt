@@ -1,0 +1,181 @@
+create table department (
+    deptName varchar(30) primary key,
+    chairman char(5),
+    building varchar(30),
+    budget numeric(10, 0));
+
+create table professor (
+    pID char(5) primary key,
+    name varchar(30) not null,
+    deptName varchar(30),
+    salary numeric(10, 0));
+
+create table student (
+    sID char(5) primary key,
+    name varchar(30) not null,
+    gender char(1),
+    deptName varchar(30),
+    GPA numeric(3, 2),
+    totalCredit integer,
+    check (gender in ('M', 'F')));
+
+create table course (
+    cID char(6) primary key,
+    title varchar(30),
+    deptName varchar(30),
+    credit integer);
+
+create table teaches (
+    pID char(5),
+    cID char(6),
+    semester char(6),
+    year numeric(4, 0),
+    classroom char(5),
+    primary key(pID, cID, semester, year),
+    check (semester in ('Spring', 'Summer', 'Fall', 'Winter')));
+    
+create table takes (
+    sID char(5),
+    cID char(6),
+    semester char(6),
+    year numeric(4, 0),
+    grade char(2),
+    primary key (sID, cID, semester, year),
+    check (semester in ('Spring', 'Summer', 'Fall', 'Winter')));
+
+create table room (
+    roomID char(5) primary key,
+    building varchar(30),
+    capacity numeric(6, 0));
+    
+insert into department values('SW', '11', 'Jungbo', 160);
+
+insert into department values('Computer', '24', 'Jungbo', 190);
+
+insert into department values('EE', '32', 'HNEng', 220);
+
+insert into department values('Media', '43', 'Jungbo', 170);
+
+insert into professor values('10', 'Lee', 'SW', 9000);
+
+insert into professor values('11', 'Kim', 'SW', 8000);
+
+insert into professor values('21', 'Hong', 'Computer', 8200);
+
+insert into professor values('24', 'Park', 'Computer', 8500);
+
+insert into professor values('31', 'Han', 'EE', 9500);
+
+insert into professor values('32', 'Song', 'EE', 8800);
+
+insert into professor values('42', 'Yun', 'Media', 9200);
+
+insert into professor values('43', 'Paik', 'Media', 9200);
+
+insert into student values('101', 'Suhan', 'M', 'SW', 3,82, 9);
+
+insert into student values('103', 'Yebin', 'F', 'SW', 3.22, 9);
+
+insert into student values('122', 'Youngjae', 'M', 'SW', 2.45, 18);
+
+insert into student values('221', 'Woojoo', 'M', 'Computer', 2.12, null);
+
+insert into student values('222', 'Yeseo', 'F', 'Computer', 3.32, 12);
+
+insert into student values('332', 'Seojun', 'M', 'EE', 2.45, 12);
+
+insert into student values('342', 'Geejun', 'M', 'EE', 3.24, 9);
+
+insert into student values('403', 'Hena', 'F', 'Media', 1.98, 6);
+
+insert into course values('111', 'Java', 'SW', 3);
+
+insert into course values('113가', 'Databases', 'SW', 3);
+
+insert into course values('113나', 'Databases', 'SW', 3);
+
+insert into course values('114', 'Database applications', 'SW', 4);
+
+insert into course values('221', 'C Programming', 'Computer', 3);
+
+insert into course values('223', 'Web programming', 'Computer', 2);
+
+insert into course values('331', 'Electronics', 'EE', 3);
+
+insert into course values('332', 'Login circuit', 'EE', 3);
+
+insert into course values('441', 'Game theory', 'Media', null);
+
+insert into course values('443', 'Animation', 'Media', 3);
+
+insert into teaches values('10', '113가', 'Spring', 2019, 301);
+
+insert into teaches values('10', '113나', 'Spring', 2019, 301);
+
+insert into teaches values('10', '113가', 'Spring', 2018, 302);
+
+insert into teaches values('10', '114', 'Fall', 2018, 302);
+
+insert into teaches values('24', '114', 'Spring', 2018, 403);
+
+insert into teaches values('24', '113가', 'Spring', 2018, 403);
+
+insert into teaches values('21', '221', 'Fall', 2018, 102);
+
+insert into teaches values('11', '111', 'Spring', 2019, 102);
+
+insert into takes values('101', '111', 'Spring', 2019, null);
+
+insert into takes values('101', '113가', 'Spring', 2018, 'B0');
+
+insert into takes values('101', '114', 'Fall', 2018, 'B+');
+
+insert into takes values('101', '221', 'Fall', 2018, 'A-');
+
+insert into room values('102', 'Jungbo', 150);
+
+insert into room values('301', 'Jungbo', 60);
+
+insert into room values('302', 'Jungbo', 55);
+
+insert into room values('403', 'Jungbo', 40);
+
+insert into room values('1002', 'HNEng', 50);
+
+insert into room values('1102', 'HNEng', 60);
+
+alter table department add constraint constD
+    foreign key (chairman) references professor
+    on delete cascade;
+
+alter table professor add constraint constP
+    foreign key (deptName) references professor
+    on delete cascade;
+
+alter table student add constraint constS
+    foreign key (deptName) references professor
+    on delete cascade;
+
+alter table course add constraint constC
+    foreign key (deptName) references professor
+    on delete cascade;
+
+alter table teaches add constraint constTE1
+    foreign key (pID) references professor
+    on delete cascade;
+
+alter table teaches add constraint constTE2
+    foreign key (cID) references course
+    on delete cascade;
+
+alter table teaches add constraint constTE3
+    foreign key (classroom) references room
+    on delete cascade;
+
+alter table takes add constraint constTA1
+    foreign key (sID) references student
+    on delete cascade;
+
+alter table takes add constraint constTA2
+    foreign key (cID) references course
+    on delete cascade;

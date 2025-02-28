@@ -1,0 +1,699 @@
+목차
+ 6.1 뷰
+ 6.2 무결성 제약
+ 6.3 트리거
+ 6.4 허가
+ 6.5 재귀적 쿼리
+
+
+ * 테이블 종류
+ 1. base relation
+ 2. virtual relation
+
+ virtual relation
+테이블이 없는데
+테이블처럼 보이는 것
+튜플이 존재하지 않는다
+for 데이터 보호
+
+
+ * 뷰
+실제로 있지는 않지만
+사용자에게는 마치 있는 것처럼 보임
+
+create view 뷰이름 as 질의문
+ex)
+create view myProfessor as
+  select pID, name, deptName
+  from professor
+
+튜플이 들어가 있지 않다
+
+
+ * 뷰는 항상 최신 데이터를 보유한다
+뷰는 다른 테이블로부터 유도되는 단일 테이블이다
+
+뷰는 물리적으로 존재하는 형식이 아니라
+가상 릴레이션이다 (가상 관계)
+
+뷰는 다른 릴레이션과 같은 방식으로 만들지 않는다
+
+베이스 테이블을 변경하면
+-> 변경된 내용이 뷰에 즉각즉각 저장되어 처리됨
+사용자 관점에서는
+마치 값이 변하는 것처럼 보인다
+
+뷰 정의를 활용하여 질의문을 처리하므로
+뷰가 가장 최신 데이터를 가지고 있는 것처럼
+사용자에게 보이는 것
+
+
+다른 뷰로 새로운 뷰를 만들 수 있다
+뷰 자기 자신으로도 새로운 뷰를 만들 수 있다
+
+
+ * 뷰 확장
+뷰 정의에서 뷰를 이용하여 다른 뷰를 만들 때
+더 이상의 정의를 만들 수 없을 때까지 뷰를 사용할 수 있다
+
+데이터베이스 시스템은 뷰에 대한 질의가 들어오면
+해당 뷰를 기존에 저장되어 있는 뷰 정의로 치환하여
+뷰가 아닌 베이스 테이블에 대한 질의문이 되게 한다
+
+뷰 확장 예제
+Create view myFaculty as
+  select pID, name, deptName
+  from professor
+  where salary > 50000;
+Create view myFacultyCs as
+  select pID, name
+  form myFaculty
+  where deptName = CS;
+
+
+ * 뷰 변경
+뷰는 튜플을 가지지 않으므로
+베이스 테이블에 입력해 주어야 한다
+
+뷰 변경에서는 고려할 사항이 있다
+특히 insert를 할 때 고려해야 한다
+
+
+ * 지원할 수 없는 뷰 변경 연산
+ 1. 뷰를 생성할 때 쿼리문으로 조인한 경우
+ 2. 집계 함수를 사용한 경우
+
+주로 모호하거나
+베이스 테이블에 반영하는 명확한 방법이 없을 때
+뷰 변경은 불가능하다
+
+
+ * 변경 가능 뷰
+변경 연산이 지원되는 뷰
+
+ 변경 가능 조건
+ 1. from 절에 테이블이 하나만 있어야 한다
+ 2. select 절에서 한 속성만 언급해야 한다
+ 3. select 절에서 expressions, aggregates, distinct를 사용하면 안 된다
+ 4. select 절에서 어떤 속성도 널 값을 가지면 안 된다
+ 5. group by절과 having 절을 가지면 안 된다
+
+일반적으로 
+1. group by
+ 2. having
+ 3. distinct
+ 4. 집합 연산
+ 5. 집계 함수
+ 6. order by
+등이 뷰 정의에 들어 있으면
+그 뷰는 변경할 수 없다
+
+
+ * with check option
+갱신 된 뷰를 통하여
+사용자가 갱신 효과를 볼 수 있을 경우에만
+뷰 갱신을 허용하는 것
+
+사용자 관점에서
+입력된 튜플이 테이블에 존재하지 않는다는
+잘못된 인식을 할 수 있으므로
+
+
+ * 뷰 제약
+ 1. 뷰에 대한 색인은 불가능하다
+ 2. 뷰에 대한 키 속성 or 무결성 제약은 정의할 수 없다
+
+
+ * 무결성 제약  Integrity Constraints  ICs
+데이터베이스에 대한 조건
+
+데이터에 대한
+정확성과 일치성을 제공하기 위해 사용
+
+
+ * 단일 테이블에 대한 제약
+ 1. not nulll
+ 2. primary key
+ 3. unique
+ 4. check (조건문)
+
+
+ * not null
+속성명 자료형 not null
+ex) name varchar(20) not null
+
+개별 속성에 적용이 가능하다
+
+
+ * primary key
+primary key(속성명1, 속성명2)
+
+여러 값이 연결되어
+튜플이 유니크해지는 것
+
+primary key는 not null이 자동으로 설정된다
+
+
+ * unique
+unique(속성명1, 속성명2)
+
+null을 허용하는 것이
+primary key와의 차이다
+
+
+ * check 절
+관련 테이블이 항상 만족해야 하는 조건을 명시
+값을 제한
+
+check (속성 in (값1, 값2))
+ex) check (semester in ('Spring', 'Summer', 'Fall', 'Winter'))
+
+
+ * 참조 무결성 제약
+외래 키에 나오는 모든 값은
+외래 키가 참조하는 테이블의 주키 값으로 나와야 한다는 것
+
+외래 키는 널 값을 가질 수 있으나
+외래키가 참조하는 주키는 해당 테이블의 주키이므로
+널 값이 나올 수 없다
+
+참조 무결성 제약은
+연관되는 데이터 연결을
+값을 이용해서 하기 때문에 발생하는 현상
+
+따라서 포인터로 튜플 간의 관계를 연결하면
+참조 무결성이 존재하지 않는다
+
+
+ * 참조 무결성 제약 선언
+ 1. 구체적인 행동 명시 없이 선언
+ 2. 참조 무결성이 위반되는 경우 이를 해결하는 구체적인 행동 명시
+  (1) cascade
+  (2) set null
+  (3) set default
+
+구체적인 선언이 없으면
+연산이 허용되지 않는다
+
+ cascade
+삭제 연산이 본래 테이블에도 파급되어
+피연산자인 튜플을 참조하는 모든 튜플에 연산을 한다
+
+ set null
+해당 테이블 속성 값을 널 값으로 하는 것
+
+foreign key(속성) references 테이블명,
+  on 명령어 제약명
+
+ex)
+foefign key(pID) references professor.
+  on delete cascade,
+  on update cascade
+
+
+ * 삭제 연산 처리
+행동이 명시되어 있지 않으면
+삭제 연산이 허용되지 않는다
+
+cascade인 경우
+삭제 연산이 본 테이블에도 파급되어
+삭제된 튜플을 참조하는 두 튜플이 모두 삭제된다
+
+set null인 경우
+해당 테이블 속성 값을 널 값으로 한다
+
+
+ * 무결성 제약 연기
+트랜잭션을 연기하는 것
+
+무결성 제약은 기본적으로 즉시 실행되지만
+무결성 제약을 명시할 때 initially deferred을 사용하면
+무결성 제약 검사 및 행동을 연기할 수 있다
+
+트랜잭션 정의 시
+무결성 제약 점검을 연기할 수도 있다
+
+
+ * 복잡한 무결성 제약
+방법은
+ 1. check 절 조건 활용
+ 2. 주장 (assertion) 기능 활용
+
+ 주장
+사용자 임의의 무결성 제약을 유지하는 방법
+but 일반적으로 주장 기능은 지원하지 않는다
+시스템에 부하를 줄 수 있기 때문에
+
+sql은 for all을 제공하지 않으므로
+some의 대우를 이용해서 표현해야 한다
+
+
+ * 트리거
+기본적으로 ECA 규칠
+ 1. 사건  event
+ 2. 조건  condition
+ 3. 행동 action
+
+ 사건
+데이터베이스 변경 연산
+ 1. insert
+ 2. delete
+ 3. update
+
+원래는 제약용으로
+assertion 대신 지원
+assertion은 성능이 엄청 느려지므로
+
+
+ * 트리거의 사건과 행동
+트리거의 사건은
+튜플 인스턴스 변화로
+튜플 입력, 삭제, 갱신 연산을 의미
+
+트리거 갱신 연산에서 속성을 지정할 수 있다
+
+update of 속성명 on 테이블명
+
+delete 연산이면
+변화 전 튜플만 지칭 가능
+
+insert 연산이면
+변화 후 튜플만 지칭 가능
+
+referencing old row as
+referencing new row as
+
+
+ * 트리거 사용
+create trigger 트리거명 
+
+ 1. 트리거 이름과 사건 명시
+ 2. 컨디션 명시
+ 3. 액션 명시
+
+보통
+create trigger
+referencing new row
+referencing old row
+for each row
+when 
+bigin
+end;
+이렇게 사용한다
+
+when 절은 조건을 명시
+
+begin 블록은 트리거의 행동을 명시
+트리거가 실행되는 코드
+
+for each row는
+변경된 각 튜플을 기준으로
+조건과 행동을 값을 수행하는 것을 의미
+조건을 만족하면 행동을 수행
+
+ex)
+create trigger myCred after update of grade on takes
+referencing new row as nrow
+referencing old row as orow
+for each row
+when nrow.grade <> 'F' and nrow.grade is not null
+  and (orow.grade = 'F' or orow.grade is null)
+begin
+  update student
+  set totalCredit = total Credit + 
+    (select credit
+     from course
+     where cID - nrow.cID)
+  where sID = nrow.sID;
+end;
+
+ex)
+create trigger myOverdraft after update on account
+referencing new row as nrow
+for each row
+when nrow.balance < 0
+begin atomic
+  insert into borrower 
+    (select cName, aNumber
+     from dpositor
+     where nrow.aNumber = depositor.aNumber);
+end;
+
+begin atomic ... end
+데이터베이스 연산을 트랜잭션으로 수행하기 위한 명령어
+
+트랜잭션 처리는
+SQL 문장을 모두 수행하던가
+아니면 하나도 수행하지 않는다
+all-or-nothing
+
+ex)
+create trigger myTotalSalary
+after update of salary on employee
+referencing new row as nrow
+referencing old row as orow
+for each row
+when (nrow.dNumber is not null)
+update department
+  set totalSalary = totalSalary + nrow.salary - orow.salary
+  where dno = nrow.dNumber;
+
+트리거는 이벤트 전에 수행될 수 있다
+before 키워드 사용
+ex) create trigger mySetNull before update on takes
+
+
+ * 트리거 다시 정리
+특정 테이블에 DML 문이 수행되었을 때 (insert, delete, update 등)
+데이터베이스에 자동으로 동작하도록 작성된 프로그램
+
+데이터베이스가 자동으로 호출하는 것이 가장 큰 특징
+
+트리거는
+ 1. 전체 트랜잭션 작업에 발생되는 트리거
+ 2. 각행에 대해 발생되는 트리거
+가 있다
+
+create trigger 트리거명
+after // 트리거가 실행된 시점을 지정
+referencing old row as orow  // 이전 튜플
+referencing new row as nrow  // 갱신한 후의 튜플
+for each row  // 각 튜플에 대하여
+when  // 트리거가 실행될 조건을 명시  (컨디션)  (트리거 실행의 제한)
+begin atomic  // 트랜잭션으로 수행하기 위한 코드, 없어도 된다  atomic도 생략 가능
+
+when 절이 없으면
+트리거는 항상 실행된다
+
+
+ * 문장 수준 트리거
+SQL 문장 단위로 트리거 행동을 수행
+사건 전후 테이블을 테이블 단위로 참조
+
+문장 수준 트리거는
+for each row 대신
+for each statement를 사용한다
+
+referencing old table
+referencing new table을 사용
+
+트리거 행동으로 인하여 튜플에 변화가 많을 때 유용
+
+but 코딩하기 어렵다
+
+이전의 것은 튜플 수준 트리거로
+튜플 단위로 트리거 행동을 수행
+
+ex)
+create trigger myTotalSalaryStateLevel
+after update of salary on employee
+referencing od table as O
+referencing new table as N
+for each statement
+when exists(select * from N where N.dnumber is not null)
+  or exists(select * from O where O.dnumber is not null)
+update department as D
+set D.tltalSalry = D.totalSalry
+  + (select sum(N.salary) from N where D.don = N.dnumber)
+  - (select sum(O.salary) from O where D.don = O.dnumbe)
+where D.don in ((select dnumber form N) union
+  (select dnumber form ));
+
+
+ * 트리거에 대한 고찰
+트리거는
+ 1. 속성의 통계 정보를 유지하거나
+ 2. 테이블의 복사본을 유지할 때
+많이 사용
+
+but 현대 데이터베이스는
+통계 데이터 관리를 위한
+실체화된 뷰 기능을 제공
+테이블 복제를 지원하는 replication 기능을 제공
+
+데이터 변화가 발생되면
+원하지 않은 트리거를 수행할 수도 있다
+
+객체 관계형 or 객체 지향 데이터베이스 시스템은
+데이터에 대한 연산을 메소드 방식으로 지원하므로
+데이터에 대한 연산을 꼭 트리거를 사용하여 구현하지 않아도 된다
+
+캡슐화가 트리거 대신 사용될 수 있다
+
+
+ * 권한 관리
+사용자가 연산에 필요한 권한이 없으면
+연산은 시스템에 의해서 수행이 거부된다
+
+DBA는 모든 권한을 가지고 있다
+DBA는 특정 사용자에게 특정 권한을 부여할 수 있다
+
+
+ * 권한  Authorization
+ 1. 데이터베이스 인스턴스에 대한 권한
+  (1) 읽기 권한  Read
+  (2) 입력 권한  Insert
+  (3) 갱신 권한  Update
+  (4) 삭제 권한  Delete
+ 2. 데이터베이스 스키마에 대한 권한
+  (1) 색인 생성 / 삭제 권한
+  (2) 테이블 속성 변경 권한
+  (3) 테이블 삭제 권한
+
+
+ * SQL 언어 권한
+ 1. select
+ 2. insert
+ 3. update
+ 4. delete
+ 5. references
+ 6. usage
+ 7. all privileges
+
+ references 권한
+테이블을 생성할 때 외래키를 선언할 수 있는 권한
+외래키 선언은 해당 테이블 뿐만 아니라
+참조되는 테이블의 주키 값에도 영향을 미치므로 (값의 생성, 삭제, 변경)
+이에 대한 권한 설정이 필요하다
+
+외래키가 참조하는 테이블의 주 키 값은
+입력, 삭제, 변경시에
+참조 무결성에 의한 여러 제약이 존재한다
+
+참조되는 테이블은 referenced table
+
+ usage 권한
+도메인을 사용할 수 있는 권한
+
+ all privileges
+줄 수 있는 모든 권한
+
+
+ * Grant 문장
+권한을 부여하는 기능
+
+grant 권한목록 on 테이블명/뷰명 to 유저리스트 with 권한옵션
+
+ex)
+grant select on professor to U1, U2, U3;
+ㄴ 사용자 U1, U2, U3에게 
+professor 테이블에 대한 select 문장을 사용할 수 있는 권한 부여
+
+ex)
+grant select on professor to U1 with grant option;
+ㄴ U1에게 자신이 받은 권한을 
+다른 사용자에게 부여할 수 있는 권한도 함께 부여
+
+ex)
+grant references (deptName) on department to Lee;
+ㄴ department 테이블의 deptName 속성을 참조하는
+외래키 생성 권한을 부여
+ㄴ 참조 무결성 제약이 형성되면
+department 속성 값 변경에 제한을 받기 때문
+
+즉, 정리하면 
+ 1. grant 연산명 on 테이블명 to 사용자명1, 사용자명;
+ 2. grant 연산명 on 테이블명 to 사용자명 with grant option;
+ 3. grant references (속성명) on 테이블명 to 사용자명;
+
+연산명에는
+ 1. select
+ 2. insert
+ 3. update
+ 4. delete
+가 있다
+
+ * revoke 문장
+부여한 권한을 철회하는 기능
+
+ 옵션
+ 1. restrict
+ 2. cascade
+
+ restrict
+권한 철회가 연쇄적이지 않음
+사용자가 의도하지 않은 권한 철회를 방지
+다른 권한도 함께 취소되는 경우
+연산 자체가 수행되지 않는다
+
+ cascade
+권한을 연쇄적으로 철회하는 것
+revoke의 디폴트 설정
+
+revoke 권한목록 on 테이블명(뷰명) from 유저명1, 유저명2;
+
+ex) revoke select on professor form U1, U2, U3;
+
+ex) revoke select on professor form U1, U2, U3 cascade;
+
+권한 취소를 받는 사용자가 public이면
+모든 사용자에게서 권한을 취소
+근데 만약 다른 사용자로부터 동일 권한을 받았으면
+그 권한까지 취소되지는 않는다
+
+ex) revoke select on professor form public;
+
+grant option 권한만도 취소 가능
+
+ex) revoke grant option for select on professor from U5;
+
+
+ * 권한 그래프  Authorization Graph
+사용자 간의 권한 부여 그래프
+
+ex) DBA -> U1 -> U2
+
+노드는 사용자를 나타내고
+에지는 권한 부여를 나타낸다
+
+그래프의 뿌리는 DBA이어야 한다
+
+모든 권한은 DBA로부터 나오므로
+그래프의 모든 에지는 DBA 모드로부터 접근이 가능해야 한다
+DBA로부터의 길이 있어야 된다는 것
+
+ex)
+DBA -> U1 -> U2에서
+DBA -> U1 길을 지우면
+U1 -> U2 길도 지워진다
+
+
+ * 뷰 권한
+뷰도 권한 부여 대상이어서
+뷰에 대한 검색, 삭제, 삽입, 갱신 권한이 있지만
+일반 테이블 권한과 다르게 적용된다
+
+뷰는 베이스 테이블에 의해 정의되지만
+권한은 베이스 테이블과 연관이 있지 않다
+
+사용자는 뷰에게
+뷰 정의에 사용된 테이블의 권한을 제외하고
+권한을 부여할 수 있다
+
+뷰 생성자는
+resource 권한이 필요 x
+일반 테이블을 생성하느 ㄴ것이 아니기 때문에
+
+일반 테이블 생성자는 
+그 테이블에 대한 모든 권한을 갖지만
+뷰 생성자는
+뷰에 대한 모든 권한을 가지지 못한다
+
+뷰 생성자는
+뷰에 대한 select 권한은 가지지만
+그 이상의 권한은 베이스 테이블의 권한에 의존적이다
+
+뷰 생성을 위한 select 권한만 가지는 것
+
+다만 사용자가 베이스 테이블에 대한 권한을 가지고 있으면
+동일한 권한을 뷰에 대해서도 갖는다
+
+사용자가 데이터베이스를 통해 보는 것은
+대부분 뷰를 통해서 보는 것
+사용자는 모르지만
+
+데이터베이스는 뷰에 대한 질의가 들어오면
+뷰 정의를 이용하여 뷰를 확장하고
+확장된 뷰는 베이스 테이블의 속성을 가진다
+이 때 사용자는 베이스 테이블에 대한 권한이 전혀 없으므로
+뷰에 대한 접근 권한 검사는 뷰가 확장되기 전에 수행되어야 한다
+
+읽기 권한만 가지고 있어도
+뷰는 생성할 수 있다
+
+
+ * 롤  Roles
+사용자의 집합
+
+다수 사용자를 동일한 롤로 정의한 후에
+권한을 부여할 수 있다
+
+롤을 다른 롤에게도 부여할 수 있다
+사용자를 계층적으로 관리하는 것
+
+create role 롤이름;
+
+ex) create role teller;
+grant role manager;
+grant select on branch to teller;
+grant update(balance) on account to teller;
+grant all privileges on account to manager;
+grant teller to manager;
+grant tell to Kim, Park;
+grant manager to Lee;
+
+
+ * SQL 권한 관리의 제약
+SQL에서 튜플 수준에서의 권한 관리는 불가능
+
+다만 갱신 연산에 대해서는
+속성에 대한 권한 관리는 가능
+
+데이터베이스 응용은 웹 환경에서 개발이 주로 이루어진다
+이 때 총 데이터베이스 세스템 총 사용자 아이디가 하나일 수도 있다
+이 경우 데이터베이스 시트메 권한 관리를 사용하지 않고
+응용 프로그램에서 사용자 관리 및 권한 관리를 수행하는 것
+
+
+ * SQL의 순환
+prereq(x, y)
+ㄴ x를 하기 위해서 미리 선이행 되어야 하는 y
+
+prereq 테이블을 활용하여 순환 뷰 정의 가능
+
+
+ * 반복 프로그램
+iterative loop를 사용하여
+특정 연산을 반복적으로 수행하며
+반복이 종료되는 조건을 매번 점검할 수 있다
+
+순환 질의는 특정한 조건이 만족하면
+반복 문장을 유한번 반복하여 원하는 답을 구할 수 있다
+
+
+ * transitive closure
+순환을 사용하여
+recPrereq 뷰에 새로운 튜플을 첨가하는 것
+
+순환은 더 이상 새로운 튜플이 첨가되지 않은 시점까지 계속된다
+이를 위해서는 순환 뷰가 단순증가 성질을 가지고 있어야 한다 (항상 증가해야 된다는 것)
+
+항상 증가하면
+언젠가 transitive closure을 구할 수 있다
+
+ex)
+with recursive recPrereq(courseID, prereqID) as (
+  (select courseID, prereqID from prereq)
+union
+  (select recPrereq.courseID, prereq.prereqID
+   from recPrereq, prereq
+   where recPrereq.prereqID = prereq.courseID)
+  )
+  select *
+  from recPrereq;
+ㄴ 이 때 반드시 조인해야 한다
+ㄴ 자기 자신을 이용해 만드는 것
+ㄴ recPrereq 순환뷰는 2개 소겅을 가지며, 두 select 문장의 합 (union)으로 정의된다
+ㄴ 중요한 것은 변수의 위치
+ 
+

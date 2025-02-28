@@ -1,0 +1,553 @@
+ * 목차
+9.1 SQL 절차적 확장
+9.2 SQL:1999 함수 및 프러시저
+9.3 PL/SQL
+
+
+ * SQL 절차적 확장
+
+ SQL/PSM
+SQL/Persistent Stored Modules
+SQL 표준이 SQL에 절차적인 확장을 지원하는 것
+데이터베이스의 임의 연산을 프로시저 or 함수를 개발 가능하게 해준다
+
+사용자는 SQL/PSM or 외부 프로그래밍 언어를 이용하여
+함수와 프로시저를 개발
+
+함수 및 프로시저는
+특수한 데이터 타입을 처리할 때 유효
+ex) 이미지 데이터 타입에 대한 중첩 판정 연산 기능, 이미지 유사성 계싼 기능 등
+
+
+ * 외부 언어 함수/프로시저
+Create procedure 프로시저명(in 속성명 데이터타입, out 속성명 데이터타입)
+returns 자료형
+language 언어이름
+external name '주소';
+
+ex)
+Create procedure deptCountProc(in deptName varchar(20), out count integer)
+returns integer
+language C
+external name '/usr/shlee/bin/deptCount';
+
+외부 언어 사용의 장점은
+함수가 효율적으로 실행되어
+시스템 전체적으로 성능향상을 기대할 수 있다는 것
+
+외부 언어 사용의 단점은
+보안 문제
+사용자가 작성한 프로그램은 데이터베이스 메모리 공간에서 실행되는데
+이 때 사용자 프로그램의에 오류가 있으면
+데이터베이스 시스템의 오류가 되어 심각한 문제를 야기할 수 있음
+
+ drawback
+결점, 문제점
+
+
+ * 보안 문제
+보안 문제를 해결하는 방식으로는 
+ 1. 자바, C# 같은 안전한 언어로 작성
+ 2. 샌드박스에서 실행
+ 3. IPC 사용
+
+ 샌드박스
+코드가 자신이 가지고 있는 메모리 영역으로 접근하는 것은 허용하지만
+질의 실행 프로세스의 메모리를 읽거나 갱신하는 것과
+파일 시스템에 접근하는 것은 허용하지 x
+so, 데이터베이스 코드에 접근하거나 손상을 끼칠 수 x
+
+ IPC
+interprocess communication
+독립된 프로세스로 사용자 함수 or 프로시저를 실행하고
+그 결과를 IPC를 이용하여 주고받는 방식
+
+IPC 방식 종류
+ 1. 공유 메모리 
+ 2. 메시지
+ 3. 파이프
+ 4. 신호
+
+Oracle과 DB2는
+데이터베이스 프로세스 부분으로 자바 함수를 실행하는 것을 허용
+
+SQL Server는
+데이터베이스 프로세스 내에서 실행하기 위하여
+공통언어실행으로 컴파일 하는 것을 허용
+
+공통언어어 실행은
+CLR  Common Language Runtime
+
+
+ * 저장 프로시저
+개발자는 데이터베이스 비즈니스 로직 연산을
+SQL/PSM으로 저장 프로시저를 개발하고
+일반 사용자는 필요 시에 이를 호출하여 수행
+
+데이터베이스 시스템 서버에서 데이터베이스 객체로 관리됨
+테이블, 뷰, sequence, index, synonym등과 같이 관리된다는 것
+
+저장 프로시저 장점
+ 1. 호출문장실행만으로 다수개의 SQL 문장 묶음이 서버에서 실행되므로 네트워크 부하가 현저히 감소 
+ 2. 사용 (호출) 권한과 접근하는 데이터 권한이 분리되어 관리되므로 사용자가 미권한 데이터에 접근도 ㄱㄴ
+ 3. 비즈니스 로직 캡슐화
+ 4. 네트워크 트래픽 회피
+ 3. SQL 주입 공격 방어
+
+ delegate
+위임하다
+
+
+ * SQL 함수
+
+Create function 함수명(속성명 타입)
+returns 타입
+begin
+  Declare 속성명 타입;
+  Select문
+  Return 속성명;
+end;
+
+ex)
+Create function profC(deptName varchar(20))
+returns integer
+begin
+  Declare pCount integer;
+  Select count(*) into pCount
+  from professor
+  where professor.deptName = profC.deptName;
+  Return pCount;
+end;
+
+
+ * 테이블 함수
+함수 결과로 테이블을 반환
+
+테이블 함수를 호출할 때는
+table 키워드 사용
+
+Create function 함수명(속성명 타입)
+  returns table(속성명 타입)
+  return table(Select문);
+
+ex)
+Create function myProf(deptName varchar(20))
+  returns table(pID char(5),
+    name varchar(20),
+    deptName varchar(20),
+    salary numeric(10, 2))
+  return table ( Select pID, name, deptName, salary
+    from professor
+    where professor.deptName = myProf.deptName);
+
+테이블 함수 호출 ex)
+Select * from table(myProf('CS'));
+
+
+ * SQL 프로시저
+인자에 대하여 입력 및 출력을 명시
+
+프로시저 이름은
+인자 개수가 다르거나
+인자 중의 하나라도 타입이 다르면
+서로 다른 프로시저 이름으로 사용 가능
+
+ex)
+Create procedure profC2 (in deptName varchar(20), out pCountinteger)
+begin
+  Select count(*) into pCount from professor
+  where professor.deptName = profC2.deptName;
+end
+
+ invoke
+(법, 규칙 등을) 들먹이다, 적용하다
+(근거, 이유로 인물, 이론, 예를) 들다, 언급하다
+들먹이다
+
+
+ * 프로시저와 함수
+
+프로시저는 로직을 기술하여
+해당 업무 처리를 직접 하는 용도로 많이 사용
+
+함수는 로직을 도와주는 목적으로 사용
+
+프로시저는
+select, where문 등에서 사용이 불가능
+
+function은
+select, where문 등에서 사용 가능
+
+프로시저는 클라이언트에서 값을 건네받아
+서버에서 작업을 한 뒤
+클라이언트에게 전달
+
+함수는 클라이언트에서 값을 건네받고
+서버에서 필요한 값을 가져와서
+클라이언트에서 작업을 하고 반환
+
+즉, 프로시저는 서버에서 작업을 하고
+함수는 클라이언트에서 작업을 한다
+
+ 프로시저
+일련의 쿼리를 하나의 함수로 실행할 수 있는
+쿼리의 집합
+
+프로시저 장점은
+ 1. 하나의 요청으로 여러 SQL 문을 실행 ㄱㄴ
+ 2. 서버에서 실행되므로 속도가 매우 빠름
+ 3. 리턴 값이 있을 수도 있고 없을 수도 있음
+ 4. 여러 개의 리턴 값을 보낼 수 있음
+
+프로시저의 단점은
+재사용성이 좋지 않다는 것
+
+ 함수
+각 프로세스를 수행하기 위해 필요한 기능
+리턴 값이 필수이다
+
+함수 단점은
+클라이언트에서 실행되기 때문에 프로시저보다 느리다는 것
+
+
+ * 절차 생성자
+
+ PSM
+persistent storage module 
+SQL의 절차적 요소 확장에 관한 표준을 정의
+
+begin과 end 사이에
+많은 SQL 문장이 들어간다
+
+대부분의 상용 데이터베이스 시스템은
+자체적인 문법을 정의하여 기능을 제공
+
+SQL 절차 생성자는
+프로그래밍 언어에서 지원하는 절차 생성자와 유사
+
+ while 반복문 예제
+Declare n integer default 0;
+While n < 10 do
+  set n = n + 1
+end while;
+
+ repeat 반복문 예제
+Repeate
+  set n = n - 1
+  until n = 0
+end repeat;
+
+ for 반목문 예제
+Declaren integer default 0;
+For r as
+  select totalCredit from student
+  where deptName = 'CS'
+do
+  set n = n + r.totalCredit
+end for;
+
+ if 조건문
+If 조건문
+  then 실행문
+elseif 조건문
+  then 실행문
+else
+  실행문
+end if
+
+ 예외 처리자 예제
+Declare noMoreSeats condition;
+Declare exit handler for noMoreSeats;
+begin
+  ...
+  signal noMoreSeats;
+  ...
+end
+
+ compound
+혼합체
+복합체
+화합물
+
+
+ * PL/SQL 프로그램
+
+ 선언 블록
+블록에서 사용되는 변수 or 상수를 선언
+생략 가능함
+
+ 예외 블록
+PL/SQL 문장 실행 도중에 발생하는 에러를
+해결하는 문장으로 구성
+생략 가능함
+
+각 문장은 세미 콜론 ;으로 끝나며
+프로그램의 마지막은 END 키워드로 끈난다
+
+Declare 
+  선언문
+Begin
+  실행문
+Exception 
+  예외문
+End;
+
+
+ * 조건 로직
+
+If 조건문1
+  then 실행문1
+elseif 조건문2
+  then 실행문2
+else
+  실행문3
+endif;
+
+
+ * 간단한 루프
+원칙적으로 무한히 반복 작업을 하지만
+사용자는 exit 혹은 exit when을 사용하여
+루프 연산 중지 ㄱㄴ
+
+Loop
+  실행문
+end loop;
+
+ 루프문 예제
+counter := 0
+loop
+  counter := counter + 1;
+  exit when counter = 5;
+end loop;
+
+참고로 :=는
+오라클 대입 연산자
+
+
+ * while 루프
+
+While 조건문 loop
+  실행문
+end loop;
+
+ while 조건문 예제
+counter "= 0;
+while counter < 6 loop
+  counter := counter + 1;
+end loop;
+
+
+ * for 루프
+미리 정해진 횟수만큼 반복하는 경우에 사용
+
+For 변수 in 옵션 reverse 작은 값..큰 값 loop
+  실행문
+end loop;
+
+ for 루프 예제
+For count2 in 1..5 loop
+  DBMS_OUTPUT.PUT_LINE(count2);
+end loop;
+
+
+ * 예외 처리
+
+SQL에서 지원하는 에러는
+ 1. 시스템 예외 (오라클 시스템이 발생)
+ 2. 사용자 정의 예외 (사용자에 의하여 발생)
+
+
+ * 시스템 예외
+
+ cursor_already_open
+ORA-06511
+
+ Invalid_curser
+ORA-01001
+
+ dup_val_on_index
+ORA-00001
+유일한 인덱스에 값을 볷하
+
+ login_denied
+ORA-01017
+유저 아이디 비밀번호 오류
+
+ zero_divide
+ORA-01476
+
+ rowtype_mismatch
+ORA-06504
+
+ subscipt_outside_limit
+ORA-06532
+한 행 이상을 리턴하는 실행문을 골랐을 때
+
+ no_data_found
+ORA-01403
+행을 하나도 리턴하지 않는 실행문을 골랐을 때
+
+ 예외 예제
+Begin
+  insert into student(sID, name) values('100', 'Lee');
+  dbms_output.put_line(1 / 0);
+exception
+  when zero_divide then
+    dbms_output.put_line ('division by zero');
+  when dup_val_on_index
+    dbms_output,put_line ('duplicate value on index');
+  when others then
+    dbms_output.put_line('an exception occurred');
+end;
+
+ duplicate
+복사하다
+
+ 키워드 others
+모든 예외를 처리하는 핸들러
+예외 처리 블록에서 다른 구체적인 에러 뒤에 항상 명시하여야 한다
+
+만약 others 예외 명시가 예외 처리 블록 가장 처음에 나오면
+다른 구체적인 에러는 적용되지 않는 결과를 초래한다
+
+
+ * 커서 사용
+select 문장이 하나 이상의 튜플을 반환하는 경우
+사용자는 커서를 사용해야 한다
+
+커서를 사용하는 단계
+ 1. Select 문장이 반환하는 속성을 저장하는 변수 선언
+ 2. 커서 선언
+ 3. 커서 오픈
+ 4. 커서로부터 튜플을 fetch
+ 5. 커서 닫기
+
+ 커서 예제
+Declare 
+  sName student name&type;
+  dName student.deptName%type;
+  Cursor myCursor is
+    Select name, deptName
+    from student
+    where GPA >= 4.0
+    order by GPA desc;
+Begin
+  Open myCursor;
+  Loop
+    Fetch myCursor into sName, dName;
+    Exit when myCursor%NOTFOUND;
+    dbms_output.put_line('student = ' || sName || 'dept = ' || dName);
+  end loop;
+end;
+/
+
+for 루프와 함께 커서를 사용하면
+커서 오픈 및 닫기 연산을 명시적으로 할 필요 x
+시스템이 자동적으로 해줌
+또한 for 루프에서 fetch 연산을 자동적으로 해줌
+
+ 커서 예제
+Declare
+  Cursor myCursor2 is
+    Select name, deptName
+    from student
+    where GPA > = 4.0
+    order by GPA desc;
+Begin
+  For myRow in myCursor2 loop
+    dbms_output.put_line('student = ' || myRow.name || 'dept = ' || myRow.deptName);
+  end loop;
+end;
+/
+
+
+ * 프로시저
+
+Create 옵션 or replace procedure 프로시저명
+옵션 매개변수 이름 옵션 in 옵션 out 옵션 in out type
+{IS | AS}
+begin
+  프로시저 몸체
+end 프로시저명
+
+Call 프로시저명(인자1, 인자2, ...);
+
+ Curly bracket
+반드시 두 개 중의 하나는 존재해야 된다는 의미
+
+{IS | AS}와 begin 사이에
+프로시저에서 임시적으로 사용하는 변수를 선언해야 한다
+이 때 declare은 사용 x
+
+예외 처리에 대한 명세는
+end proc_name 바로 전에 해야 된다
+
+ 프로시저 예제
+Create or replace procedure myProc (
+  pID in product.id%type, p_factor in number) as
+    p_count integer;
+begin
+  select count(*) into p_count
+  from product where id = pID;
+  If p_count = 1 then
+    Update product set price = price * p_factor
+    where id = pID;
+    commit;
+  end if;
+exception
+  when others then rollback;
+end myProc;
+ㄴ 주어진 pID로 상품을 검색한 후
+pID로 검색되는 상품 개수가 하나이면
+해당 물건의 가격을 주어진 p_facto만큼 곱하는 연산을 하고
+마지막으로 commit을 수행
+연산 과정에서 에러가 발생하면 roolback 연산 수행
+
+
+ * 함수
+
+Create 옵션 or replace function 함수명
+옵션 매개변수명 옵션 in 옵션 out 옵션 in out 타입
+return 타입
+{IS | AS}
+begin
+  함수 몸체
+end 함수명;
+
+ 함수 예제
+Create or replace function circle_area (
+  p_radius in number
+) return number as
+  v_pi number "= 3.1415926;
+  v_area number
+begin
+  v_area := v_pi * power(p_radius, 2);
+  return v_area;
+end circle_area;
+/
+
+ 함수 사용은
+Select circle_area(2)
+from dual;
+
+
+ * 팩키지
+서로 관련이 되는 함수 및 프로시저를 묶어 팩키지 생성
+
+팩키지 선언은
+ 1. specification 
+ 2. body 부분
+으로 구성
+
+ specification 부분
+함수 및 프로시저 이름과 매개 변수를 명시
+
+ body 부분
+해당 함수 및 프로시저의 실제 코드를 명시
+
+팩키지에 명시된 함수 및 프로시저 호출은
+ 1. 팩키지명.함수명
+ 2. 팩키지명.프로시저명
+
+팩키지는 복잡성을 외부에 공개하지 않고
+일반 사용자에게 유용한 데이터베이스 연산 기능을 제공 가능

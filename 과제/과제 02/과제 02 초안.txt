@@ -1,0 +1,114 @@
+Create trigger trigger01 after insert on userss
+referencing new row as nrow
+referencing old row as orow
+for each row
+when nrow.gender = 'm' and nrow.job = 'student'
+begin
+  select id, name
+  from userss
+  where orow.gender = 'm' and orow.job = 'student';
+end;
+
+
+Create trigger trigger02 after insert on userss
+referencing new row as nrow
+referencing old row as orwo
+for each row
+when nrow.gender = 'f'
+begin
+  select *
+  from userss
+  where orow.gender = 'f';
+end;
+
+
+Create view view01 as
+select name, gender, favorite, job
+from userss;
+
+
+Create view view02 as
+select enterprice, location, main
+from company;
+
+
+// with check option
+Create view view03 as
+select productName, manufacture, category
+from goods
+with check option;
+
+
+Select productName
+from goods
+where price > some (
+  select price
+  from goods
+  where series = 'no');
+
+
+Select productName
+from goods
+where price < some (
+  select price
+  from goods
+  where stock > 25);
+
+
+Select id
+from userss
+where gender = any (
+  select gender
+  from userss
+  where job = 'student');
+
+
+Select name
+from userss
+where job = any (
+  select job
+  from userss
+  where email is null);
+
+
+Select enterprice
+from company
+where employee > all (
+  select employee
+  from company
+  where manufacture = 'red');
+
+
+Select enterprice
+from company
+where employee < all (
+  select employee
+  from company
+  where location = 'seoul');
+
+
+Select productName, stock
+form goods
+where manufacture = (
+  select manufacture
+  from company
+  where loaction = 'busan');
+
+
+Select productName, pID, rank() over (order by price desc) as sRank01
+from goods
+order by sRank01;
+
+
+Select enterprice, rank() over (order by employee) as sRank02
+from company
+order by sRank02;
+
+
+Insert into userss values('poke341', 4456, 'keen', 'm', 'computer', 'student', null);
+
+
+Insert into userss values('mon674', 6842, 'hou', 'f', 'headphone', 'teacher', 'popo12@email.com');
+
+
+Insert into goods values('afleif', 'gg31664', 'green', 34, 'computer', 'no', 240000, 'computer');
